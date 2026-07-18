@@ -4,6 +4,12 @@ import { useState } from "react";
 
 const INTERESTS = ["A custom arcade", "Press & media", "Licensing & partnerships", "Something else"];
 
+// Fleet Web3Forms access key (same pattern as cyberhopeai.com / Hope Training Academy).
+// Client-side submit only (Web3Forms blocks server-side). Leads email to the fleet inbox;
+// a dedicated info@arcadeinventors.com key can replace this once that mailbox is verified.
+const WEB3FORMS_KEY =
+  process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "c6756334-43b4-408d-9242-f925a7e6176c";
+
 export default function ContactForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
@@ -13,18 +19,24 @@ export default function ContactForm() {
     setStatus("sending");
     setError("");
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
+    const fd = new FormData(form);
+    const name = String(fd.get("name") || "");
+    const interest = String(fd.get("interest") || "General");
+    fd.append("access_key", WEB3FORMS_KEY);
+    fd.append("subject", `Arcade Inventors — ${interest} — ${name}`);
+    fd.append("from_name", "Arcade Inventors Website");
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        headers: { Accept: "application/json" },
+        body: fd,
       });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "Something went wrong.");
+      const json = await res.json();
+      if (!json.success) throw new Error(json.message || "Something went wrong.");
       setStatus("sent");
       form.reset();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       setStatus("error");
     }
   }
@@ -43,6 +55,8 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} className="rounded-2xl border border-line bg-panel p-6 sm:p-8">
+      {/* honeypot */}
+      <input type="checkbox" name="botcheck" className="hidden" tabIndex={-1} autoComplete="off" />
       <div className="grid gap-4 sm:grid-cols-2">
         <input name="name" required placeholder="Your name" className={field} autoComplete="name" />
         <input name="email" type="email" required placeholder="Email" className={field} autoComplete="email" />
