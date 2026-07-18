@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ContactForm from "@/components/ContactForm";
 import { COMPANIES } from "@/content/site-data";
+import { LOGOS } from "@/content/site-assets";
 
 const CUSTOMERS = [
   "SONY PLAYSTATION", "MICROSOFT", "BLIZZARD", "NVIDIA", "MSNBC",
@@ -121,6 +122,11 @@ export default function Home() {
                 href={`/${v.slug}`}
                 className="group flex flex-col rounded-2xl border border-line bg-panel p-6 transition-all hover:-translate-y-0.5 hover:border-cyan/50 hover:shadow-neon"
               >
+                {LOGOS[v.slug] && (
+                  <div className="mb-4 flex h-12 items-center">
+                    <img src={LOGOS[v.slug]} alt={`${v.name} logo`} className="max-h-12 w-auto max-w-[150px] rounded-md bg-white/95 object-contain px-2 py-1" />
+                  </div>
+                )}
                 <div className="flex items-start justify-between">
                   <h3 className="font-display text-lg font-600 text-chalk">{v.name}</h3>
                   <span className="text-fog transition-colors group-hover:text-cyan">→</span>

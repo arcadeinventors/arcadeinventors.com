@@ -65,16 +65,22 @@ const orgLd = {
   "@type": "Organization",
   name: "Arcade Inventors",
   url: SITE,
+  logo: `${SITE}/LOGO-arcade-inventors.png`,
   founder: { "@type": "Person", name: "Rick Barretto" },
   foundingDate: "1999",
+  email: "info@arcadeinventors.com",
   description:
     "The invention studio of Rick Barretto. Creator of the world's first custom, open-architecture personal arcades (1999) and the IP home behind a family of technology ventures.",
+  address: { "@type": "PostalAddress", addressLocality: "Indianapolis", addressRegion: "IN", addressCountry: "US" },
+  contactPoint: { "@type": "ContactPoint", email: "info@arcadeinventors.com", contactType: "sales" },
   knowsAbout: [
     "Custom arcade design",
     "Open-architecture hardware",
     "Interactive entertainment",
+    "Mobile game development",
     "Invention",
     "Artificial intelligence",
+    "Esports",
   ],
   sameAs: [
     "https://www.rickbarretto.com",
